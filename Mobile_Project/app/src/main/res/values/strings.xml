@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Mobile_Project</string>
+
+    <!-- App String values -->
+    <string name="title">Gym Junkie</string>
+
+    <!-- App Button String values -->
+    <string name="login">Login</string>
+    <string name="register">Register</string>
 </resources>
