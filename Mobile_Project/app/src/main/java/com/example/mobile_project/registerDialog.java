@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
@@ -37,8 +38,16 @@ public class registerDialog extends AppCompatDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
                         String userName = newUsername.getText().toString();
-                        String passWord = newUsername.getText().toString();
-                        listener.text(userName, passWord); //calls the text method to update the database
+                        String passWord = newPassword.getText().toString();
+                        if (userName.equals("")){
+                            Toast.makeText(getContext(), "Try Again...Please Enter Username", Toast.LENGTH_SHORT).show();
+                        }
+                        else if (passWord.equals("")){
+                                Toast.makeText(getContext(), "Try Again...Please Enter Password", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            listener.register(userName, passWord);//calls the text method to update the database
+                        }
                     }
                 });
         return builder.create();
@@ -55,6 +64,6 @@ public class registerDialog extends AppCompatDialogFragment {
     }
 
     public interface DialogListener{
-        void text(String username, String password);
+        void register(String username, String password);
     }
 }

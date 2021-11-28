@@ -2,6 +2,7 @@ package com.example.mobile_project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,11 +10,13 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements registerDialog.DialogListener, loginDialog.DialogListener{
     Button loginButton, registerButton;
+    DBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        dbHandler = new DBHandler(MainActivity.this);
 
 
         registerButton = findViewById(R.id.registerButton);
@@ -22,23 +25,6 @@ public class MainActivity extends AppCompatActivity implements registerDialog.Di
             @Override
             public void onClick(View v) {
                 registerDialog();
-                //String address = registerButton.getText().toString();
-                //double[] answer;
-                //double checker = 200;
-
-                /*check to ensure user inputted a value
-                if (address.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Please enter location you would like to update!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                answer = dbHandler.readLocationAddress(address);
-                if (checker == answer[0]){
-                    Toast.makeText(MainActivity.this, "Address is not in database... please try a different address!", Toast.LENGTH_SHORT).show();
-                }
-                else{
-
-                    openDialog();//calls the alert dialog to change an existing address
-                } */
             }
         });
         loginButton = findViewById(R.id.loginButton);
@@ -47,23 +33,6 @@ public class MainActivity extends AppCompatActivity implements registerDialog.Di
             @Override
             public void onClick(View v) {
                 loginDialog();
-                //String address = registerButton.getText().toString();
-                //double[] answer;
-                //double checker = 200;
-
-                /*check to ensure user inputted a value
-                if (address.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Please enter location you would like to update!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                answer = dbHandler.readLocationAddress(address);
-                if (checker == answer[0]){
-                    Toast.makeText(MainActivity.this, "Address is not in database... please try a different address!", Toast.LENGTH_SHORT).show();
-                }
-                else{
-
-                    openDialog();//calls the alert dialog to change an existing address
-                } */
             }
         });
 
@@ -79,13 +48,30 @@ public class MainActivity extends AppCompatActivity implements registerDialog.Di
         newDialog.show(getSupportFragmentManager(), "login dialog");
     }
     @Override
-    public void text(String username, String password) {
-        //String address = addressInputVal.getText().toString();
-
+    public void register(String username, String password) {
         //calls db to update
-        //dbHandler.updateLocationAddress(newAddress, address);
+        String response = dbHandler.register(username, password);
+        if (response.equals("success")){
+            Toast.makeText(MainActivity.this, "New user has been created", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(MainActivity.this, "User already exists", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void login(String username, String password) {
+        //calls db to update
+        String response = dbHandler.login(username, password);
+        if (response.equals("failed")){
+            Toast.makeText(MainActivity.this, "Username and Password don't match", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(MainActivity.this, "Welcome " + response, Toast.LENGTH_SHORT).show();
+            openActivity2();
+        }
 
-        Toast.makeText(MainActivity.this, "New user has been created", Toast.LENGTH_SHORT).show();
-        //addressInputVal.setText("");
+    }
+
+    private void openActivity2() {
+        Intent intent = new Intent(this, MainActivity2.class);
+        startActivity(intent);
     }
 }
