@@ -12,4 +12,7 @@
     <!-- Dialog EditText String values -->
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="home">Home</string>
+    <string name="map">Map</string>
+    <string name="user">User</string>
 </resources>
