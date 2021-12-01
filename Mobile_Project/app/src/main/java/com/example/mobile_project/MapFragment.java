@@ -1,5 +1,6 @@
 package com.example.mobile_project;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,9 @@ public class MapFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_maps, container, false);
+        Intent intent = new Intent(getActivity(), MapsActivity.class);
+        startActivity(intent);
+        return inflater.inflate(R.layout.activity_maps, container, false);
+
     }
 }
