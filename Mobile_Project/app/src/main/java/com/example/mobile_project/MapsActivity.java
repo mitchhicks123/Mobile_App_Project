@@ -8,9 +8,14 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -34,7 +39,9 @@ import com.google.android.gms.location.LocationRequest;
 
 
 import java.io.FileDescriptor;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MapsActivity extends FragmentActivity implements
@@ -49,6 +56,7 @@ public class MapsActivity extends FragmentActivity implements
     private Location lastLocation;
     private Marker currentUserLocationMarker;
     private static final int Request_User_Location_Code = 99;
+
 
 
 
@@ -69,6 +77,54 @@ public class MapsActivity extends FragmentActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
+
+
+    public void onClick(View v){
+        switch (v.getId())
+        {
+            case R.id.search_address:
+                EditText addressField = (EditText) findViewById(R.id.location_search);
+                String address = addressField.getText().toString();
+
+                List<Address> addressList = null;
+                MarkerOptions userMarkerOptions = new MarkerOptions();
+
+                if (!TextUtils.isEmpty(address)){
+                    Geocoder geocoder = new Geocoder(this);
+                    try {
+                        addressList = geocoder.getFromLocationName(address, 6);
+
+                        if (addressList != null){
+                            for(int i =0; i<addressList.size(); i++) {
+                                Address userAddress = addressList.get(i);
+                                LatLng latLng = new LatLng(userAddress.getLatitude(), userAddress.getLongitude());
+
+                                userMarkerOptions.position(latLng);
+                                userMarkerOptions.title("Current Location");
+                                userMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                mMap.addMarker(userMarkerOptions);
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                                mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
+                            }
+
+                        }
+                        else {
+                            Toast.makeText(this, "Location Not Found", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+                else{
+                    Toast.makeText(this, "Please Enter a Location", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
